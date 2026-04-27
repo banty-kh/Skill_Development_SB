@@ -1,0 +1,13 @@
+credentials:
+  usernames:
+    admin:
+      name: Admin User
+      password: admin123
+    viewer:
+      name: Viewer User
+      password: viewer123
+
+cookie:
+  name: skill_dashboard
+  key: some_secret_key
+  expiry_days: 1

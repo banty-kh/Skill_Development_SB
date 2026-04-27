@@ -1,10 +1,8 @@
-# Skill Development MIS (Streamlit)
+# Skill Development MIS
 
 ## Run Locally
 pip install -r requirements.txt
 streamlit run app.py
 
-## Features
-- Dashboard
-- Add Student
-- SQLite Database
+## Login
+admin / admin123
