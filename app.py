@@ -16,7 +16,7 @@ menu = st.sidebar.radio("Go to", ["Dashboard", "Add Student", "Data Quality"])
 
 # ---------------- Dashboard ----------------
 if menu == "Dashboard":
-    st.title("📊 Skill Development Dashboard")
+    st.title("Skill Development Dashboard")
 
     inst = st.sidebar.multiselect("Institution", df["Training Institution"].dropna().unique(), default=df["Training Institution"].dropna().unique())
     status = st.sidebar.multiselect("Status", df["Training Status"].dropna().unique(), default=df["Training Status"].dropna().unique())
