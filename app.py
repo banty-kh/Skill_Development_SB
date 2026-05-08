@@ -1,15 +1,29 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
+import os
 
 st.set_page_config(page_title="Skill Development MIS", layout="wide")
 
-from database import load_data, save_data
+DATA_FILE = "data.csv"
 
 # ---------------- PUBLIC ACCESS ----------------
 # Authentication has been removed to make the app publicly accessible.
 
 # ---------------- LOAD DATA ----------------
+def load_data():
+    if os.path.exists(DATA_FILE):
+        return pd.read_csv(DATA_FILE)
+    else:
+        return pd.DataFrame(columns=[
+            "Student Name","Gender","Training Institution","Trade",
+            "Training Status","Start Date","End Date","Batch",
+            "Placement Hotel","Placement Status","Placement Date"
+        ])
+
+def save_data(df):
+    df.to_csv(DATA_FILE, index=False)
+
 df = load_data()
 
 # ---------------- ROLE BASED MENU ----------------
