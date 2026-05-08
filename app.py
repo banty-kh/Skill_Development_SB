@@ -7,30 +7,8 @@ st.set_page_config(page_title="Skill Development MIS", layout="wide")
 
 DATA_FILE = "data.csv"
 
-# ---------------- SIMPLE LOGIN ----------------
-def login():
-    st.title("🔐 Login")
-
-    username = st.text_input("Username")
-    password = st.text_input("Password", type="password")
-
-    if st.button("Login"):
-        if username == "admin" and password == "admin123":
-            st.session_state["logged_in"] = True
-            st.session_state["role"] = "admin"
-        elif username == "viewer" and password == "viewer123":
-            st.session_state["logged_in"] = True
-            st.session_state["role"] = "viewer"
-        else:
-            st.error("Invalid credentials")
-
-# Session state
-if "logged_in" not in st.session_state:
-    st.session_state["logged_in"] = False
-
-if not st.session_state["logged_in"]:
-    login()
-    st.stop()
+# ---------------- PUBLIC ACCESS ----------------
+# Authentication has been removed to make the app publicly accessible.
 
 # ---------------- LOAD DATA ----------------
 def load_data():
@@ -49,12 +27,7 @@ def save_data(df):
 df = load_data()
 
 # ---------------- ROLE BASED MENU ----------------
-role = st.session_state["role"]
-
-if role == "viewer":
-    menu = st.sidebar.radio("Navigation", ["Dashboard"])
-else:
-    menu = st.sidebar.radio("Navigation", ["Dashboard", "Add Student", "Data Quality"])
+menu = st.sidebar.radio("Navigation", ["Dashboard", "Add Student", "Data Quality"])
 
 # ---------------- DASHBOARD ----------------
 if menu == "Dashboard":
