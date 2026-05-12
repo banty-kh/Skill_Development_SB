@@ -119,7 +119,7 @@ menu = st.sidebar.radio("Navigation", ["Dashboard", "Data Quality", "View All St
 
 
 def set_dashboard_background(image_path: str = "Sunbird Logo.png"):
-    """Apply full-page background image to the dashboard page."""
+    """Apply a subtle centered background logo to the dashboard page."""
     image_file = Path(image_path)
     if not image_file.exists():
         return
@@ -129,10 +129,12 @@ def set_dashboard_background(image_path: str = "Sunbird Logo.png"):
         f"""
         <style>
             [data-testid="stAppViewContainer"] {{
-                background-image: url("data:image/png;base64,{encoded}");
+                background-image:
+                    linear-gradient(rgba(255, 255, 255, 0.88), rgba(255, 255, 255, 0.88)),
+                    url("data:image/png;base64,{encoded}");
                 background-repeat: no-repeat;
-                background-position: center center;
-                background-size: cover;
+                background-position: center 180px;
+                background-size: min(380px, 45vw);
                 background-attachment: fixed;
             }}
         </style>
