@@ -72,11 +72,6 @@ def load_data():
             "Placement Status","Placement Date"
         ])
 
-def save_data_to_session(df):
-    """Save data to session state (since writing to Google Sheets requires API auth)"""
-    st.session_state['pending_data'] = df
-    return True
-
 
 def render_interpretation(df_view, dimension):
     """Render a separate chart + quick interpretation for a selected dimension."""
@@ -115,12 +110,8 @@ def render_interpretation(df_view, dimension):
 # Load data
 df = load_data()
 
-# Check for pending data from form submission
-if st.session_state.get('use_pending_data') and 'pending_data' in st.session_state:
-    df = st.session_state['pending_data']
-
 # ---------------- MENU ----------------
-menu = st.sidebar.radio("Navigation", ["Dashboard", "Add Student", "Data Quality", "View All Students"])
+menu = st.sidebar.radio("Navigation", ["Dashboard", "Data Quality", "View All Students"])
 
 
 def set_dashboard_background(image_path: str = "Sunbird Logo.png"):
@@ -152,14 +143,7 @@ if menu == "Dashboard":
     set_dashboard_background()
     st.title("📊 Skill Development Dashboard")
 
-    refresh_col1, refresh_col2 = st.columns([3, 1])
-    with refresh_col1:
-        st.info("💡 **Note**: To save data permanently, manually paste new entries into your Google Sheet, or download the backup CSV and upload it to the sheet.")
-    with refresh_col2:
-        if st.button("🔄 Reload from Google Sheet", use_container_width=True):
-            st.session_state.pop('pending_data', None)
-            st.session_state['use_pending_data'] = False
-            st.rerun()
+    st.info("💡 **Note**: Dashboard data is loaded directly from your Google Sheet. Update the sheet to update charts.")
 
     if not df.empty:
         # Filters
@@ -266,83 +250,8 @@ if menu == "Dashboard":
         st.markdown("#### 4) Trade")
         render_interpretation(filtered, "Trade")
 
-        # Backup Button
-        st.download_button(
-            "📥 Download Backup CSV",
-            filtered.to_csv(index=False).encode('utf-8'),
-            "backup.csv",
-            "text/csv",
-            help="Download and manually upload this to your Google Sheet to save permanently"
-        )
     else:
-        st.info("📝 No data available. Add students to see the dashboard.")
-
-# ---------------- ADD STUDENT ----------------
-elif menu == "Add Student":
-    st.title("➕ Add New Student")
-    
-    st.warning("⚠️ **Manual Save Required**: After adding a student, download the CSV and paste it into your Google Sheet to save permanently.")
-
-    with st.form("student_form"):
-        col1, col2 = st.columns(2)
-        
-        with col1:
-            name = st.text_input("Student Name *")
-            gender = st.selectbox("Gender", ["Male","Female","Other"])
-            address = st.text_area("Address")
-            district = st.text_input("District *")
-            state = st.text_input("State *")
-        
-        with col2:
-            institution = st.text_input("Training Institution *")
-            trade = st.text_input("Trade")
-            status = st.selectbox("Training Status", ["Ongoing","Completed","Dropped"])
-            start = st.date_input("Start Date")
-            end = st.date_input("End Date")
-
-        st.subheader("Placement Details")
-        
-        col3, col4 = st.columns(2)
-        
-        with col3:
-            placement_hotel = st.text_input("Placement Hotel")
-            placement_status = st.selectbox("Placement Status", ["Placed","Not Placed"])
-        
-        with col4:
-            placement_date = st.date_input("Placement Date")
-
-        submitted = st.form_submit_button("💾 Add to Session (Download CSV to Save Permanently)")
-
-        if submitted:
-            if not name or not institution or not district or not state:
-                st.error("❌ Name, Institution, District, and State are required fields!")
-            elif end < start:
-                st.error("❌ End date cannot be before start date")
-            else:
-                new_row = {
-                    "Student Name": name,
-                    "Gender": gender,
-                    "Address": address,
-                    "District": district,
-                    "State": state,
-                    "Training Institution": institution,
-                    "Trade": trade,
-                    "Training Status": status,
-                    "Start Date": str(start),
-                    "End Date": str(end),
-                    "Placement Hotel": placement_hotel,
-                    "Placement Status": placement_status,
-                    "Placement Date": str(placement_date)
-                }
-                
-                new_data = pd.DataFrame([new_row])
-                updated_df = pd.concat([df, new_data], ignore_index=True)
-                
-                if save_data_to_session(updated_df):
-                    st.session_state['use_pending_data'] = True
-                    st.success("✅ Student added to session!")
-                    st.info("👉 Go to Dashboard and click 'Download Backup CSV', then paste into your Google Sheet")
-                    st.balloons()
+        st.info("📝 No data available. Please update your Google Sheet to see dashboard data.")
 
 # ---------------- VIEW ALL STUDENTS ----------------
 elif menu == "View All Students":
