@@ -45,6 +45,15 @@ def load_data():
                 if col not in df.columns:
                     df[col] = pd.NA
 
+            # Normalize string values to avoid filter/group mismatches caused by extra spaces
+            string_cols = [
+                "Student Name","Gender","Address","District","State",
+                "Training Institution","Trade","Training Status",
+                "Placement Hotel","Placement Status"
+            ]
+            for col in string_cols:
+                df[col] = df[col].astype("string").str.strip()
+
             return df
         else:
             st.error("Could not connect to Google Sheets. Make sure the sheet is public.")
@@ -107,7 +116,7 @@ def render_interpretation(df_view, dimension):
 df = load_data()
 
 # Check for pending data from form submission
-if 'pending_data' in st.session_state:
+if st.session_state.get('use_pending_data') and 'pending_data' in st.session_state:
     df = st.session_state['pending_data']
 
 # ---------------- MENU ----------------
@@ -142,8 +151,15 @@ def set_dashboard_background(image_path: str = "Sunbird Logo.png"):
 if menu == "Dashboard":
     set_dashboard_background()
     st.title("📊 Skill Development Dashboard")
-    
-    st.info("💡 **Note**: To save data permanently, manually paste new entries into your Google Sheet, or download the backup CSV and upload it to the sheet.")
+
+    refresh_col1, refresh_col2 = st.columns([3, 1])
+    with refresh_col1:
+        st.info("💡 **Note**: To save data permanently, manually paste new entries into your Google Sheet, or download the backup CSV and upload it to the sheet.")
+    with refresh_col2:
+        if st.button("🔄 Reload from Google Sheet", use_container_width=True):
+            st.session_state.pop('pending_data', None)
+            st.session_state['use_pending_data'] = False
+            st.rerun()
 
     if not df.empty:
         # Filters
@@ -323,6 +339,7 @@ elif menu == "Add Student":
                 updated_df = pd.concat([df, new_data], ignore_index=True)
                 
                 if save_data_to_session(updated_df):
+                    st.session_state['use_pending_data'] = True
                     st.success("✅ Student added to session!")
                     st.info("👉 Go to Dashboard and click 'Download Backup CSV', then paste into your Google Sheet")
                     st.balloons()
