@@ -197,6 +197,64 @@ if menu == "Dashboard":
         st.markdown("#### 5) Training Status-wise")
         st.plotly_chart(px.bar(status_chart, x="Training Status", y="Number of Students", color="Training Status", color_discrete_sequence=color_sequence), use_container_width=True)
 
+        st.markdown("#### 6) Gender-wise")
+        gender_chart = (
+            filtered["Gender"]
+            .fillna("Not Provided")
+            .replace("", "Not Provided")
+            .value_counts()
+            .reset_index()
+        )
+        gender_chart.columns = ["Gender", "Number of Students"]
+        st.plotly_chart(
+            px.bar(
+                gender_chart,
+                x="Gender",
+                y="Number of Students",
+                color="Gender",
+                color_discrete_sequence=color_sequence,
+            ),
+            use_container_width=True,
+        )
+
+        male_data = filtered[filtered["Gender"].str.lower() == "male"]
+        female_data = filtered[filtered["Gender"].str.lower() == "female"]
+
+        gender_col1, gender_col2 = st.columns(2)
+        with gender_col1:
+            st.markdown("#### 7) Male Students by Trade")
+            if not male_data.empty:
+                male_trade_chart = male_data.groupby("Trade").size().reset_index(name="Number of Students")
+                st.plotly_chart(
+                    px.bar(
+                        male_trade_chart,
+                        x="Trade",
+                        y="Number of Students",
+                        color="Trade",
+                        color_discrete_sequence=color_sequence,
+                    ),
+                    use_container_width=True,
+                )
+            else:
+                st.info("No male student records available.")
+
+        with gender_col2:
+            st.markdown("#### 8) Female Students by Trade")
+            if not female_data.empty:
+                female_trade_chart = female_data.groupby("Trade").size().reset_index(name="Number of Students")
+                st.plotly_chart(
+                    px.bar(
+                        female_trade_chart,
+                        x="Trade",
+                        y="Number of Students",
+                        color="Trade",
+                        color_discrete_sequence=color_sequence,
+                    ),
+                    use_container_width=True,
+                )
+            else:
+                st.info("No female student records available.")
+
         # Placement Section
         st.subheader("🏨 Placement Overview")
 
