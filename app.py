@@ -52,6 +52,41 @@ def save_data_to_session(df):
     st.session_state['pending_data'] = df
     return True
 
+
+def render_interpretation(df_view, dimension):
+    """Render a separate chart + quick interpretation for a selected dimension."""
+    if dimension not in df_view.columns:
+        st.warning(f"Column '{dimension}' not found in the dataset.")
+        return
+
+    dim_data = (
+        df_view[dimension]
+        .fillna("Not Provided")
+        .replace("", "Not Provided")
+        .value_counts()
+        .reset_index()
+    )
+    dim_data.columns = [dimension, "Count"]
+
+    if dim_data.empty:
+        st.info(f"No data available for {dimension}.")
+        return
+
+    st.plotly_chart(px.bar(dim_data, x=dimension, y="Count"), use_container_width=True)
+
+    top_row = dim_data.iloc[0]
+    top_name = top_row[dimension]
+    top_count = int(top_row["Count"])
+    total = int(dim_data["Count"].sum())
+    top_pct = (top_count / total) * 100 if total else 0
+
+    st.markdown(
+        f"- **Top {dimension}**: `{top_name}` with **{top_count}** students "
+        f"(**{top_pct:.1f}%** of shown records).\n"
+        f"- **Unique values**: **{len(dim_data)}**.\n"
+        f"- **Total mapped records**: **{total}**."
+    )
+
 # Load data
 df = load_data()
 
@@ -156,6 +191,22 @@ if menu == "Dashboard":
                 hotel_chart = hotel_data.groupby("Placement Hotel").size().reset_index(name="Count")
                 if not hotel_chart.empty:
                     st.plotly_chart(px.bar(hotel_chart, x="Placement Hotel", y="Count"), use_container_width=True)
+
+        # Data Interpretation Section
+        st.subheader("📌 Data Interpretation (Separate Views)")
+        st.markdown("Interpretation shown separately for each required dimension.")
+
+        st.markdown("#### 1) Training Institution")
+        render_interpretation(filtered, "Training Institution")
+
+        st.markdown("#### 2) Placement Status")
+        render_interpretation(filtered, "Placement Status")
+
+        st.markdown("#### 3) Placement Hotel")
+        render_interpretation(filtered, "Placement Hotel")
+
+        st.markdown("#### 4) Trade")
+        render_interpretation(filtered, "Trade")
 
         # Backup Button
         st.download_button(
