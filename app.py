@@ -1,68 +1,60 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
-from streamlit_gsheets import GSheetsConnection
+import gspread
 
 st.set_page_config(page_title="Skill Development MIS", layout="wide")
 
 # ---------------- GOOGLE SHEETS CONNECTION ----------------
-@st.cache_resource
-def get_connection():
-    return st.connection("gsheets", type=GSheetsConnection)
+SHEET_URL = st.secrets.get("sheet_url", "https://docs.google.com/spreadsheets/d/1MEHTubLQE36RB0Rg5k-aGPdrcV2QuTCG5U8yZCNU0qk/edit?gid=64238622#gid=64238622")
 
+@st.cache_resource
+def get_worksheet():
+    """Connect to public Google Sheet"""
+    try:
+        gc = gspread.service_account_from_dict(st.secrets["gcp_service_account"])
+        sh = gc.open_by_url(SHEET_URL)
+        return sh.sheet1
+    except:
+        # Fallback: try anonymous access for public sheets
+        gc = gspread.Client()
+        sh = gc.open_by_url(SHEET_URL)
+        return sh.sheet1
 
 def load_data():
     """Load data from Google Sheets"""
     try:
-        conn = get_connection()
-        df = conn.read(worksheet="Sheet1", ttl=5)
-
-        # If sheet is empty, return empty dataframe with correct columns
-        if df.empty or len(df.columns) == 1:
-            return pd.DataFrame(
-                columns=[
-                    "Student Name",
-                    "Gender",
-                    "Address",
-                    "District",
-                    "State",
-                    "Training Institution",
-                    "Trade",
-                    "Training Status",
-                    "Start Date",
-                    "End Date",
-                    "Placement Hotel",
-                    "Placement Status",
-                    "Placement Date",
-                ]
-            )
+        worksheet = get_worksheet()
+        data = worksheet.get_all_records()
+        
+        if not data:
+            return pd.DataFrame(columns=[
+                "Student Name","Gender","Address","District","State",
+                "Training Institution","Trade","Training Status",
+                "Start Date","End Date","Placement Hotel",
+                "Placement Status","Placement Date"
+            ])
+        
+        df = pd.DataFrame(data)
         return df
+        
     except Exception as e:
         st.error(f"Error loading data: {e}")
-        return pd.DataFrame(
-            columns=[
-                "Student Name",
-                "Gender",
-                "Address",
-                "District",
-                "State",
-                "Training Institution",
-                "Trade",
-                "Training Status",
-                "Start Date",
-                "End Date",
-                "Placement Hotel",
-                "Placement Status",
-                "Placement Date",
-            ]
-        )
-
+        return pd.DataFrame(columns=[
+            "Student Name","Gender","Address","District","State",
+            "Training Institution","Trade","Training Status",
+            "Start Date","End Date","Placement Hotel",
+            "Placement Status","Placement Date"
+        ])
 
 def save_data(df):
     """Save data to Google Sheets"""
     try:
-        conn = get_connection()
-        conn.update(worksheet="Sheet1", data=df)
+        worksheet = get_worksheet()
+        # Clear existing data
+        worksheet.clear()
+        # Write headers and data
+        worksheet.update([df.columns.values.tolist()] + df.values.tolist())
         return True
     except Exception as e:
         st.error(f"Error saving data: {e}")
