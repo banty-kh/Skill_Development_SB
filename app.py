@@ -3,6 +3,8 @@ import pandas as pd
 import plotly.express as px
 import requests
 from io import StringIO
+import base64
+from pathlib import Path
 
 st.set_page_config(page_title="Skill Development MIS", layout="wide")
 
@@ -97,8 +99,34 @@ if 'pending_data' in st.session_state:
 # ---------------- MENU ----------------
 menu = st.sidebar.radio("Navigation", ["Dashboard", "Add Student", "Data Quality", "View All Students"])
 
+
+def set_dashboard_background(image_path: str = "Sunbird Logo.png"):
+    """Apply a subtle centered background logo to the dashboard page."""
+    image_file = Path(image_path)
+    if not image_file.exists():
+        return
+
+    encoded = base64.b64encode(image_file.read_bytes()).decode()
+    st.markdown(
+        f"""
+        <style>
+            [data-testid="stAppViewContainer"] {{
+                background-image:
+                    linear-gradient(rgba(255, 255, 255, 0.88), rgba(255, 255, 255, 0.88)),
+                    url("data:image/png;base64,{encoded}");
+                background-repeat: no-repeat;
+                background-position: center 180px;
+                background-size: min(380px, 45vw);
+                background-attachment: fixed;
+            }}
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+
 # ---------------- DASHBOARD ----------------
 if menu == "Dashboard":
+    set_dashboard_background()
     st.title("📊 Skill Development Dashboard")
     
     st.info("💡 **Note**: To save data permanently, manually paste new entries into your Google Sheet, or download the backup CSV and upload it to the sheet.")
