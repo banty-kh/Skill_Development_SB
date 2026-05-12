@@ -6,8 +6,6 @@ from streamlit_gsheets import GSheetsConnection
 st.set_page_config(page_title="Skill Development MIS", layout="wide")
 
 # ---------------- GOOGLE SHEETS CONNECTION ----------------
-SHEET_URL = st.secrets.get("sheet_url", "https://docs.google.com/spreadsheets/d/1MEHTubLQE36RB0Rg5k-aGPdrcV2QuTCG5U8yZCNU0qk/edit?gid=64238622#gid=64238622")
-
 @st.cache_resource
 def get_connection():
     return st.connection("gsheets", type=GSheetsConnection)
