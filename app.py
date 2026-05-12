@@ -202,29 +202,27 @@ if menu == "Dashboard":
     col4.metric("Districts", filtered["District"].nunique() if not filtered.empty else 0)
 
     if not filtered.empty:
-        # Charts
-        st.subheader("Institution-wise Students")
-        inst_chart = filtered.groupby("Training Institution").size().reset_index(name="Count")
-        st.plotly_chart(px.bar(inst_chart, x="Training Institution", y="Count"), use_container_width=True)
+        st.subheader("📈 Student Count Graphs")
 
-        # District-wise Distribution
-        st.subheader("District-wise Students")
-        district_chart = filtered.groupby("District").size().reset_index(name="Count")
-        st.plotly_chart(px.bar(district_chart, x="District", y="Count"), use_container_width=True)
+        trade_chart = filtered.groupby("Trade").size().reset_index(name="Number of Students")
+        st.markdown("#### 1) Trade-wise")
+        st.plotly_chart(px.bar(trade_chart, x="Trade", y="Number of Students"), use_container_width=True)
 
-        col_left, col_right = st.columns(2)
-        
-        with col_left:
-            st.subheader("Training Status Distribution")
-            st.plotly_chart(px.pie(filtered, names="Training Status"), use_container_width=True)
-        
-        with col_right:
-            st.subheader("State-wise Distribution")
-            st.plotly_chart(px.pie(filtered, names="State"), use_container_width=True)
+        partner_chart = filtered.groupby("Training Institution").size().reset_index(name="Number of Students")
+        st.markdown("#### 2) Partner Institution-wise")
+        st.plotly_chart(px.bar(partner_chart, x="Training Institution", y="Number of Students"), use_container_width=True)
 
-        st.subheader("Institution vs Status")
-        inst_status = filtered.groupby(["Training Institution","Training Status"]).size().reset_index(name="Count")
-        st.plotly_chart(px.bar(inst_status, x="Training Institution", y="Count", color="Training Status", barmode="stack"), use_container_width=True)
+        district_chart = filtered.groupby("District").size().reset_index(name="Number of Students")
+        st.markdown("#### 3) District-wise")
+        st.plotly_chart(px.bar(district_chart, x="District", y="Number of Students"), use_container_width=True)
+
+        state_chart = filtered.groupby("State").size().reset_index(name="Number of Students")
+        st.markdown("#### 4) State-wise")
+        st.plotly_chart(px.bar(state_chart, x="State", y="Number of Students"), use_container_width=True)
+
+        status_chart = filtered.groupby("Training Status").size().reset_index(name="Number of Students")
+        st.markdown("#### 5) Training Status-wise")
+        st.plotly_chart(px.bar(status_chart, x="Training Status", y="Number of Students"), use_container_width=True)
 
         # Placement Section
         st.subheader("🏨 Placement Overview")
