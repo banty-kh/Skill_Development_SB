@@ -6,7 +6,7 @@ from io import StringIO
 import base64
 from pathlib import Path
 
-st.set_page_config(page_title="Skill Development MIS", layout="wide")
+st.set_page_config(page_title="Skill Development Dashboard", layout="wide")
 
 # ---------------- GOOGLE SHEETS CONNECTION ----------------
 # Get your Google Sheet ID from the URL
