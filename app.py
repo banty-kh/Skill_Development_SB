@@ -172,7 +172,7 @@ if menu == "Dashboard":
     col1.metric("Total Students", len(filtered))
     col2.metric("Ongoing", len(filtered[filtered["Training Status"]=="Ongoing"]) if not filtered.empty else 0)
     col3.metric("Completed", len(filtered[filtered["Training Status"]=="Completed"]) if not filtered.empty else 0)
-    col4.metric("Districts", filtered["District"].nunique() if not filtered.empty else 0)
+    col4.metric("Placed", len(filtered[filtered["Placement Status"]=="Placed"]) if not filtered.empty else 0)
 
     if not filtered.empty:
         st.subheader("📈 Student Count Graphs")
