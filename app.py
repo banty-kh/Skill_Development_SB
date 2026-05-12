@@ -145,6 +145,22 @@ if menu == "Dashboard":
 
     st.info("💡 **Note**: Dashboard data is loaded directly from your Google Sheet. Update the sheet to update charts.")
 
+    ctrl_col1, ctrl_col2 = st.columns([1, 2])
+    with ctrl_col1:
+        if st.button("🔄 Reload from Google Sheet", use_container_width=True):
+            st.rerun()
+
+    palette_options = {
+        "Plotly": px.colors.qualitative.Plotly,
+        "Set2": px.colors.qualitative.Set2,
+        "Safe": px.colors.qualitative.Safe,
+        "Pastel": px.colors.qualitative.Pastel,
+        "Dark24": px.colors.qualitative.Dark24,
+    }
+    with ctrl_col2:
+        palette_name = st.selectbox("🎨 Graph Color Theme", list(palette_options.keys()), index=0)
+    color_sequence = palette_options[palette_name]
+
     filtered = df.copy()
 
     # KPIs
@@ -159,23 +175,23 @@ if menu == "Dashboard":
 
         trade_chart = filtered.groupby("Trade").size().reset_index(name="Number of Students")
         st.markdown("#### 1) Trade-wise")
-        st.plotly_chart(px.bar(trade_chart, x="Trade", y="Number of Students"), use_container_width=True)
+        st.plotly_chart(px.bar(trade_chart, x="Trade", y="Number of Students", color="Trade", color_discrete_sequence=color_sequence), use_container_width=True)
 
         partner_chart = filtered.groupby("Training Institution").size().reset_index(name="Number of Students")
         st.markdown("#### 2) Partner Institution-wise")
-        st.plotly_chart(px.bar(partner_chart, x="Training Institution", y="Number of Students"), use_container_width=True)
+        st.plotly_chart(px.bar(partner_chart, x="Training Institution", y="Number of Students", color="Training Institution", color_discrete_sequence=color_sequence), use_container_width=True)
 
         district_chart = filtered.groupby("District").size().reset_index(name="Number of Students")
         st.markdown("#### 3) District-wise")
-        st.plotly_chart(px.bar(district_chart, x="District", y="Number of Students"), use_container_width=True)
+        st.plotly_chart(px.bar(district_chart, x="District", y="Number of Students", color="District", color_discrete_sequence=color_sequence), use_container_width=True)
 
         state_chart = filtered.groupby("State").size().reset_index(name="Number of Students")
         st.markdown("#### 4) State-wise")
-        st.plotly_chart(px.bar(state_chart, x="State", y="Number of Students"), use_container_width=True)
+        st.plotly_chart(px.bar(state_chart, x="State", y="Number of Students", color="State", color_discrete_sequence=color_sequence), use_container_width=True)
 
         status_chart = filtered.groupby("Training Status").size().reset_index(name="Number of Students")
         st.markdown("#### 5) Training Status-wise")
-        st.plotly_chart(px.bar(status_chart, x="Training Status", y="Number of Students"), use_container_width=True)
+        st.plotly_chart(px.bar(status_chart, x="Training Status", y="Number of Students", color="Training Status", color_discrete_sequence=color_sequence), use_container_width=True)
 
         # Placement Section
         st.subheader("🏨 Placement Overview")
@@ -192,7 +208,7 @@ if menu == "Dashboard":
             if not hotel_data.empty:
                 hotel_chart = hotel_data.groupby("Placement Hotel").size().reset_index(name="Count")
                 if not hotel_chart.empty:
-                    st.plotly_chart(px.bar(hotel_chart, x="Placement Hotel", y="Count"), use_container_width=True)
+                    st.plotly_chart(px.bar(hotel_chart, x="Placement Hotel", y="Count", color="Placement Hotel", color_discrete_sequence=color_sequence), use_container_width=True)
 
         # Data Interpretation Section
         st.subheader("📌 Data Interpretation (Separate Views)")
