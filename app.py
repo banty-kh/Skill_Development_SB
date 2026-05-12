@@ -111,6 +111,10 @@ def render_interpretation(df_view, dimension):
 df = load_data()
 
 # ---------------- MENU ----------------
+logo_path = Path("Sunbird Logo.png")
+if logo_path.exists():
+    st.sidebar.image(str(logo_path), use_container_width=True)
+
 menu = st.sidebar.radio("Navigation", ["Dashboard", "Data Quality", "View All Students"])
 
 
