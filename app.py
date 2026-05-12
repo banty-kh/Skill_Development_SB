@@ -172,7 +172,7 @@ if menu == "Dashboard":
     col1.metric("Total Students", len(filtered))
     col2.metric("Ongoing", len(filtered[filtered["Training Status"]=="Ongoing"]) if not filtered.empty else 0)
     col3.metric("Completed", len(filtered[filtered["Training Status"]=="Completed"]) if not filtered.empty else 0)
-    col4.metric("Placement status Placed", len(filtered[filtered["Placement Status"]=="Placed"]) if not filtered.empty else 0)
+    col4.metric("Districts", filtered["District"].nunique() if not filtered.empty else 0)
 
     if not filtered.empty:
         st.subheader("📈 Student Count Graphs")
@@ -185,9 +185,9 @@ if menu == "Dashboard":
         st.markdown("#### 2) Partner Institution-wise")
         st.plotly_chart(px.bar(partner_chart, x="Training Institution", y="Number of Students", color="Training Institution", color_discrete_sequence=color_sequence), use_container_width=True)
 
-        gender_chart = filtered.groupby("Gender").size().reset_index(name="Number of Students")
-        st.markdown("#### 3) Gender-wise (Male/Female)")
-        st.plotly_chart(px.bar(gender_chart, x="Gender", y="Number of Students", color="Gender", color_discrete_sequence=color_sequence), use_container_width=True)
+        district_chart = filtered.groupby("District").size().reset_index(name="Number of Students")
+        st.markdown("#### 3) District-wise")
+        st.plotly_chart(px.bar(district_chart, x="District", y="Number of Students", color="District", color_discrete_sequence=color_sequence), use_container_width=True)
 
         state_chart = filtered.groupby("State").size().reset_index(name="Number of Students")
         st.markdown("#### 4) State-wise")
