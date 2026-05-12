@@ -22,6 +22,8 @@ def load_data():
         
         if response.status_code == 200:
             df = pd.read_csv(StringIO(response.text))
+            # Normalize column names from Sheets (trim spaces, remove BOM)
+            df.columns = [str(c).replace("\ufeff", "").strip() for c in df.columns]
             
             # If empty or just headers
             if df.empty or len(df) == 0:
@@ -31,6 +33,18 @@ def load_data():
                     "Start Date","End Date","Placement Hotel",
                     "Placement Status","Placement Date"
                 ])
+
+            # Ensure required columns always exist to prevent KeyError in UI filters
+            required_cols = [
+                "Student Name","Gender","Address","District","State",
+                "Training Institution","Trade","Training Status",
+                "Start Date","End Date","Placement Hotel",
+                "Placement Status","Placement Date"
+            ]
+            for col in required_cols:
+                if col not in df.columns:
+                    df[col] = pd.NA
+
             return df
         else:
             st.error("Could not connect to Google Sheets. Make sure the sheet is public.")
