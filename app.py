@@ -147,34 +147,43 @@ if menu == "Dashboard":
 
     if not df.empty:
         # Filters
-        inst_options = df["Training Institution"].dropna().unique().tolist()
-        status_options = df["Training Status"].dropna().unique().tolist()
-        district_options = df["District"].dropna().unique().tolist()
-        state_options = df["State"].dropna().unique().tolist()
-        
-        inst_filter = st.sidebar.multiselect(
-            "Institution",
-            inst_options,
-            default=inst_options
-        )
+        inst_options = sorted(df["Training Institution"].dropna().unique().tolist())
+        status_options = sorted(df["Training Status"].dropna().unique().tolist())
+        district_options = sorted(df["District"].dropna().unique().tolist())
+        state_options = sorted(df["State"].dropna().unique().tolist())
 
-        status_filter = st.sidebar.multiselect(
-            "Training Status",
-            status_options,
-            default=status_options
-        )
-        
-        district_filter = st.sidebar.multiselect(
-            "District",
-            district_options,
-            default=district_options
-        )
-        
-        state_filter = st.sidebar.multiselect(
-            "State",
-            state_options,
-            default=state_options
-        )
+        if st.sidebar.button("Reset Filters", use_container_width=True):
+            st.session_state["inst_filter"] = inst_options
+            st.session_state["status_filter"] = status_options
+            st.session_state["district_filter"] = district_options
+            st.session_state["state_filter"] = state_options
+            st.rerun()
+
+        # Ensure selected values are always valid for current sheet options
+        if "inst_filter" not in st.session_state:
+            st.session_state["inst_filter"] = inst_options
+        else:
+            st.session_state["inst_filter"] = [v for v in st.session_state["inst_filter"] if v in inst_options] or inst_options
+
+        if "status_filter" not in st.session_state:
+            st.session_state["status_filter"] = status_options
+        else:
+            st.session_state["status_filter"] = [v for v in st.session_state["status_filter"] if v in status_options] or status_options
+
+        if "district_filter" not in st.session_state:
+            st.session_state["district_filter"] = district_options
+        else:
+            st.session_state["district_filter"] = [v for v in st.session_state["district_filter"] if v in district_options] or district_options
+
+        if "state_filter" not in st.session_state:
+            st.session_state["state_filter"] = state_options
+        else:
+            st.session_state["state_filter"] = [v for v in st.session_state["state_filter"] if v in state_options] or state_options
+
+        inst_filter = st.sidebar.multiselect("Institution", inst_options, key="inst_filter")
+        status_filter = st.sidebar.multiselect("Training Status", status_options, key="status_filter")
+        district_filter = st.sidebar.multiselect("District", district_options, key="district_filter")
+        state_filter = st.sidebar.multiselect("State", state_options, key="state_filter")
 
         filtered = df[
             (df["Training Institution"].isin(inst_filter)) &
@@ -251,7 +260,10 @@ if menu == "Dashboard":
         render_interpretation(filtered, "Trade")
 
     else:
-        st.info("📝 No data available. Please update your Google Sheet to see dashboard data.")
+        if not df.empty:
+            st.warning("No records match the current filter combination. Click 'Reset Filters' in the sidebar.")
+        else:
+            st.info("📝 No data available. Please update your Google Sheet to see dashboard data.")
 
 # ---------------- VIEW ALL STUDENTS ----------------
 elif menu == "View All Students":
