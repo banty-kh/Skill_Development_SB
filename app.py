@@ -163,7 +163,7 @@ if menu == "Dashboard":
     set_dashboard_background()
     st.title("📊 Skill Development Dashboard")
 
-    st.info("💡 **Note**: Dashboard data is loaded directly from your Google Sheet. Update the sheet to update charts.")
+    st.info("💡 **Note**: Dashboard data is loaded directly from the Google Sheet. Update the sheet to update charts.")
 
     ctrl_col1, ctrl_col2 = st.columns([1, 2])
     with ctrl_col1:
