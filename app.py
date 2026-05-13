@@ -194,26 +194,26 @@ if menu == "Dashboard":
         st.subheader("📈 Student Count Graphs")
 
         trade_chart = filtered.groupby("Trade").size().reset_index(name="Number of Students")
-        st.markdown("#### 1) Trade-wise")
+        st.markdown("#### 1) Trade")
         st.plotly_chart(make_count_bar(trade_chart, x_col="Trade", y_col="Number of Students", color_col="Trade", color_sequence=color_sequence), use_container_width=True)
 
         partner_chart = filtered.groupby("Training Institution").size().reset_index(name="Number of Students")
-        st.markdown("#### 2) Partner Institution-wise")
+        st.markdown("#### 2) Partner Institution")
         st.plotly_chart(make_count_bar(partner_chart, x_col="Training Institution", y_col="Number of Students", color_col="Training Institution", color_sequence=color_sequence), use_container_width=True)
 
         district_chart = filtered.groupby("District").size().reset_index(name="Number of Students")
-        st.markdown("#### 3) District-wise")
+        st.markdown("#### 3) District")
         st.plotly_chart(make_count_bar(district_chart, x_col="District", y_col="Number of Students", color_col="District", color_sequence=color_sequence), use_container_width=True)
 
         state_chart = filtered.groupby("State").size().reset_index(name="Number of Students")
-        st.markdown("#### 4) State-wise")
+        st.markdown("#### 4) State")
         st.plotly_chart(make_count_bar(state_chart, x_col="State", y_col="Number of Students", color_col="State", color_sequence=color_sequence), use_container_width=True)
 
         status_chart = filtered.groupby("Training Status").size().reset_index(name="Number of Students")
-        st.markdown("#### 5) Training Status-wise")
+        st.markdown("#### 5) Training Status")
         st.plotly_chart(make_count_bar(status_chart, x_col="Training Status", y_col="Number of Students", color_col="Training Status", color_sequence=color_sequence), use_container_width=True)
 
-        st.markdown("#### 6) Gender-wise")
+        st.markdown("#### 6) Gender")
         gender_chart = (
             filtered["Gender"]
             .fillna("Not Provided")
@@ -289,7 +289,7 @@ if menu == "Dashboard":
                     st.plotly_chart(make_count_bar(hotel_chart, x_col="Placement Hotel", y_col="Count", color_col="Placement Hotel", color_sequence=color_sequence), use_container_width=True)
 
         # Data Interpretation Section
-        st.subheader("📌 Data Interpretation (Separate Views)")
+        st.subheader("📊 Data Interpretation (Separate Views)")
         st.markdown("Interpretation shown separately for each required dimension.")
 
         st.markdown("#### 1) Training Institution")
