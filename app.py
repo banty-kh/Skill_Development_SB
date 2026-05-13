@@ -73,6 +73,22 @@ def load_data():
         ])
 
 
+
+
+def make_count_bar(data, x_col, y_col, color_col=None, color_sequence=None):
+    """Create a bar chart with count labels shown above bars."""
+    fig = px.bar(
+        data,
+        x=x_col,
+        y=y_col,
+        color=color_col,
+        color_discrete_sequence=color_sequence,
+        text=y_col,
+    )
+    fig.update_traces(textposition="outside", cliponaxis=False)
+    fig.update_layout(uniformtext_minsize=8, uniformtext_mode="hide")
+    return fig
+
 def render_interpretation(df_view, dimension):
     """Render a separate chart + quick interpretation for a selected dimension."""
     if dimension not in df_view.columns:
@@ -92,7 +108,7 @@ def render_interpretation(df_view, dimension):
         st.info(f"No data available for {dimension}.")
         return
 
-    st.plotly_chart(px.bar(dim_data, x=dimension, y="Count"), use_container_width=True)
+    st.plotly_chart(make_count_bar(dim_data, x_col=dimension, y_col="Count"), use_container_width=True)
 
     top_row = dim_data.iloc[0]
     top_name = top_row[dimension]
@@ -179,23 +195,23 @@ if menu == "Dashboard":
 
         trade_chart = filtered.groupby("Trade").size().reset_index(name="Number of Students")
         st.markdown("#### 1) Trade-wise")
-        st.plotly_chart(px.bar(trade_chart, x="Trade", y="Number of Students", color="Trade", color_discrete_sequence=color_sequence), use_container_width=True)
+        st.plotly_chart(make_count_bar(trade_chart, x_col="Trade", y_col="Number of Students", color_col="Trade", color_sequence=color_sequence), use_container_width=True)
 
         partner_chart = filtered.groupby("Training Institution").size().reset_index(name="Number of Students")
         st.markdown("#### 2) Partner Institution-wise")
-        st.plotly_chart(px.bar(partner_chart, x="Training Institution", y="Number of Students", color="Training Institution", color_discrete_sequence=color_sequence), use_container_width=True)
+        st.plotly_chart(make_count_bar(partner_chart, x_col="Training Institution", y_col="Number of Students", color_col="Training Institution", color_sequence=color_sequence), use_container_width=True)
 
         district_chart = filtered.groupby("District").size().reset_index(name="Number of Students")
         st.markdown("#### 3) District-wise")
-        st.plotly_chart(px.bar(district_chart, x="District", y="Number of Students", color="District", color_discrete_sequence=color_sequence), use_container_width=True)
+        st.plotly_chart(make_count_bar(district_chart, x_col="District", y_col="Number of Students", color_col="District", color_sequence=color_sequence), use_container_width=True)
 
         state_chart = filtered.groupby("State").size().reset_index(name="Number of Students")
         st.markdown("#### 4) State-wise")
-        st.plotly_chart(px.bar(state_chart, x="State", y="Number of Students", color="State", color_discrete_sequence=color_sequence), use_container_width=True)
+        st.plotly_chart(make_count_bar(state_chart, x_col="State", y_col="Number of Students", color_col="State", color_sequence=color_sequence), use_container_width=True)
 
         status_chart = filtered.groupby("Training Status").size().reset_index(name="Number of Students")
         st.markdown("#### 5) Training Status-wise")
-        st.plotly_chart(px.bar(status_chart, x="Training Status", y="Number of Students", color="Training Status", color_discrete_sequence=color_sequence), use_container_width=True)
+        st.plotly_chart(make_count_bar(status_chart, x_col="Training Status", y_col="Number of Students", color_col="Training Status", color_sequence=color_sequence), use_container_width=True)
 
         st.markdown("#### 6) Gender-wise")
         gender_chart = (
@@ -207,12 +223,12 @@ if menu == "Dashboard":
         )
         gender_chart.columns = ["Gender", "Number of Students"]
         st.plotly_chart(
-            px.bar(
+            make_count_bar(
                 gender_chart,
-                x="Gender",
-                y="Number of Students",
-                color="Gender",
-                color_discrete_sequence=color_sequence,
+                x_col="Gender",
+                y_col="Number of Students",
+                color_col="Gender",
+                color_sequence=color_sequence,
             ),
             use_container_width=True,
         )
@@ -226,12 +242,12 @@ if menu == "Dashboard":
             if not male_data.empty:
                 male_trade_chart = male_data.groupby("Trade").size().reset_index(name="Number of Students")
                 st.plotly_chart(
-                    px.bar(
+                    make_count_bar(
                         male_trade_chart,
-                        x="Trade",
-                        y="Number of Students",
-                        color="Trade",
-                        color_discrete_sequence=color_sequence,
+                        x_col="Trade",
+                        y_col="Number of Students",
+                        color_col="Trade",
+                        color_sequence=color_sequence,
                     ),
                     use_container_width=True,
                 )
@@ -243,12 +259,12 @@ if menu == "Dashboard":
             if not female_data.empty:
                 female_trade_chart = female_data.groupby("Trade").size().reset_index(name="Number of Students")
                 st.plotly_chart(
-                    px.bar(
+                    make_count_bar(
                         female_trade_chart,
-                        x="Trade",
-                        y="Number of Students",
-                        color="Trade",
-                        color_discrete_sequence=color_sequence,
+                        x_col="Trade",
+                        y_col="Number of Students",
+                        color_col="Trade",
+                        color_sequence=color_sequence,
                     ),
                     use_container_width=True,
                 )
@@ -270,7 +286,7 @@ if menu == "Dashboard":
             if not hotel_data.empty:
                 hotel_chart = hotel_data.groupby("Placement Hotel").size().reset_index(name="Count")
                 if not hotel_chart.empty:
-                    st.plotly_chart(px.bar(hotel_chart, x="Placement Hotel", y="Count", color="Placement Hotel", color_discrete_sequence=color_sequence), use_container_width=True)
+                    st.plotly_chart(make_count_bar(hotel_chart, x_col="Placement Hotel", y_col="Count", color_col="Placement Hotel", color_sequence=color_sequence), use_container_width=True)
 
         # Data Interpretation Section
         st.subheader("📌 Data Interpretation (Separate Views)")
