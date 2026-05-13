@@ -205,7 +205,7 @@ if menu == "Dashboard":
     if palette_param not in palette_options:
         palette_param = "Plotly"
 
-    with ctrl_col3:
+    with ctrl_col2:
         palette_name = st.selectbox(
             "🎨 Graph Color Theme",
             list(palette_options.keys()),
