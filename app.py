@@ -233,7 +233,7 @@ if menu == "Dashboard":
         st.plotly_chart(make_count_bar(trade_chart, x_col="Trade", y_col="Number of Students", color_col="Trade", color_sequence=color_sequence), use_container_width=True)
 
         partner_chart = filtered.groupby("Training Institution").size().reset_index(name="Number of Students")
-        st.markdown("#### 2) Partner Institution")
+        st.markdown("#### 2) Training Institution")
         st.plotly_chart(make_count_bar(partner_chart, x_col="Training Institution", y_col="Number of Students", color_col="Training Institution", color_sequence=color_sequence), use_container_width=True)
 
         district_chart = filtered.groupby("District").size().reset_index(name="Number of Students")
