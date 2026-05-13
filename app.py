@@ -165,7 +165,7 @@ if menu == "Dashboard":
 
     st.info("💡 **Note**: Dashboard data is loaded directly from the Google Sheet. Update the sheet to update charts.")
 
-    ctrl_col1, ctrl_col2 = st.columns([1, 2])
+    ctrl_col1, ctrl_spacer, ctrl_col3 = st.columns([1, 3, 1])
     with ctrl_col1:
         if st.button("🔄 Reload from Google Sheet", use_container_width=True):
             st.rerun()
@@ -205,7 +205,7 @@ if menu == "Dashboard":
     if palette_param not in palette_options:
         palette_param = "Plotly"
 
-    with ctrl_col2:
+    with ctrl_col3:
         palette_name = st.selectbox(
             "🎨 Graph Color Theme",
             list(palette_options.keys()),
