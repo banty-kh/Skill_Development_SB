@@ -172,13 +172,48 @@ if menu == "Dashboard":
 
     palette_options = {
         "Plotly": px.colors.qualitative.Plotly,
+        "Set1": px.colors.qualitative.Set1,
         "Set2": px.colors.qualitative.Set2,
+        "Set3": px.colors.qualitative.Set3,
         "Safe": px.colors.qualitative.Safe,
         "Pastel": px.colors.qualitative.Pastel,
+        "Pastel1": px.colors.qualitative.Pastel1,
+        "Pastel2": px.colors.qualitative.Pastel2,
+        "Bold": px.colors.qualitative.Bold,
+        "Vivid": px.colors.qualitative.Vivid,
+        "D3": px.colors.qualitative.D3,
+        "Prism": px.colors.qualitative.Prism,
+        "G10": px.colors.qualitative.G10,
+        "T10": px.colors.qualitative.T10,
+        "Alphabet": px.colors.qualitative.Alphabet,
         "Dark24": px.colors.qualitative.Dark24,
+        "Light24": px.colors.qualitative.Light24,
     }
+
+    st.markdown(
+        """
+        <style>
+        div[data-testid="stSelectbox"] {
+            max-width: 240px;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    palette_param = st.query_params.get("theme", "Plotly")
+    if palette_param not in palette_options:
+        palette_param = "Plotly"
+
     with ctrl_col2:
-        palette_name = st.selectbox("🎨 Graph Color Theme", list(palette_options.keys()), index=0)
+        palette_name = st.selectbox(
+            "🎨 Graph Color Theme",
+            list(palette_options.keys()),
+            index=list(palette_options.keys()).index(palette_param),
+            key="graph_theme_selector",
+        )
+
+    st.query_params["theme"] = palette_name
     color_sequence = palette_options[palette_name]
 
     filtered = df.copy()
