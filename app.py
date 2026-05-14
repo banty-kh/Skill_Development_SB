@@ -123,42 +123,6 @@ def render_interpretation(df_view, dimension):
         f"- **Total mapped records**: **{total}**."
     )
 
-def render_batch_cohort_month_year(df_view):
-    """Render batch/cohort month-year representation if matching columns are available."""
-    month_col = next((c for c in ["Batch Month", "Cohort Month", "Month"] if c in df_view.columns), None)
-    year_col = next((c for c in ["Batch Year", "Cohort Year", "Year"] if c in df_view.columns), None)
-
-    if not month_col or not year_col:
-        st.info("Batch/Cohort month-year columns are not available in this dataset.")
-        return
-
-    month_year_chart = (
-        df_view[[month_col, year_col]]
-        .fillna("Not Provided")
-        .replace("", "Not Provided")
-        .astype("string")
-    )
-    month_year_chart["Batch/Cohort Month-Year"] = (
-        month_year_chart[month_col].str.strip() + " " + month_year_chart[year_col].str.strip()
-    )
-    month_year_chart["Batch/Cohort Month-Year"] = month_year_chart["Batch/Cohort Month-Year"].str.strip()
-    month_year_chart = (
-        month_year_chart["Batch/Cohort Month-Year"]
-        .replace("", "Not Provided")
-        .value_counts()
-        .reset_index()
-    )
-    month_year_chart.columns = ["Batch/Cohort Month-Year", "Count"]
-
-    if month_year_chart.empty:
-        st.info("No data available for Batch/Cohort month-year representation.")
-        return
-
-    st.plotly_chart(
-        make_count_bar(month_year_chart, x_col="Batch/Cohort Month-Year", y_col="Count"),
-        use_container_width=True,
-    )
-
 # Load data
 df = load_data()
 
@@ -374,9 +338,6 @@ if menu == "Dashboard":
 
         st.markdown("#### 4) Trade")
         render_interpretation(filtered, "Trade")
-
-        st.markdown("#### 5) Batch/Cohort Month-Year")
-        render_batch_cohort_month_year(filtered)
 
     else:
         st.info("📝 No data available. Please update your Google Sheet to see dashboard data.")
