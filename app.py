@@ -30,7 +30,7 @@ def load_data():
                 return pd.DataFrame(columns=[
                     "Student Name","Gender","Address","District","State",
                     "Training Institution","Trade","Training Status",
-                    "Start Date","End Date","Placement Hotel",
+                    "Placement Hotel",
                     "Placement Status","Placement Date"
                 ])
 
@@ -38,7 +38,7 @@ def load_data():
             required_cols = [
                 "Student Name","Gender","Address","District","State",
                 "Training Institution","Trade","Training Status",
-                "Start Date","End Date","Placement Hotel",
+                "Placement Hotel",
                 "Placement Status","Placement Date"
             ]
             for col in required_cols:
@@ -60,7 +60,7 @@ def load_data():
             return pd.DataFrame(columns=[
                 "Student Name","Gender","Address","District","State",
                 "Training Institution","Trade","Training Status",
-                "Start Date","End Date","Placement Hotel",
+                "Placement Hotel",
                 "Placement Status","Placement Date"
             ])
     except Exception as e:
@@ -68,7 +68,7 @@ def load_data():
         return pd.DataFrame(columns=[
             "Student Name","Gender","Address","District","State",
             "Training Institution","Trade","Training Status",
-            "Start Date","End Date","Placement Hotel",
+            "Placement Hotel",
             "Placement Status","Placement Date"
         ])
 
