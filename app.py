@@ -30,7 +30,7 @@ def load_data():
                 return pd.DataFrame(columns=[
                     "Student Name","Gender","Address","District","State",
                     "Training Institution","Trade","Training Status",
-                    "Placement Hotel",
+                    "Placement Organization",
                     "Placement Status","Placement Date"
                 ])
 
@@ -38,7 +38,7 @@ def load_data():
             required_cols = [
                 "Student Name","Gender","Address","District","State",
                 "Training Institution","Trade","Training Status",
-                "Placement Hotel",
+                "Placement Organization",
                 "Placement Status","Placement Date"
             ]
             for col in required_cols:
@@ -49,7 +49,7 @@ def load_data():
             string_cols = [
                 "Student Name","Gender","Address","District","State",
                 "Training Institution","Trade","Training Status",
-                "Placement Hotel","Placement Status"
+                "Placement Organization","Placement Status"
             ]
             for col in string_cols:
                 df[col] = df[col].astype("string").str.strip()
@@ -60,7 +60,7 @@ def load_data():
             return pd.DataFrame(columns=[
                 "Student Name","Gender","Address","District","State",
                 "Training Institution","Trade","Training Status",
-                "Placement Hotel",
+                "Placement Organization",
                 "Placement Status","Placement Date"
             ])
     except Exception as e:
@@ -68,7 +68,7 @@ def load_data():
         return pd.DataFrame(columns=[
             "Student Name","Gender","Address","District","State",
             "Training Institution","Trade","Training Status",
-            "Placement Hotel",
+            "Placement Organization",
             "Placement Status","Placement Date"
         ])
 
@@ -319,9 +319,9 @@ if menu == "Dashboard":
         if "Placement Hotel" in filtered.columns:
             hotel_data = filtered[filtered["Placement Status"]=="Placed"]
             if not hotel_data.empty:
-                hotel_chart = hotel_data.groupby("Placement Hotel").size().reset_index(name="Count")
+                hotel_chart = hotel_data.groupby("Placement Organization").size().reset_index(name="Count")
                 if not hotel_chart.empty:
-                    st.plotly_chart(make_count_bar(hotel_chart, x_col="Placement Hotel", y_col="Count", color_col="Placement Hotel", color_sequence=color_sequence), use_container_width=True)
+                    st.plotly_chart(make_count_bar(hotel_chart, x_col="Placement Organization", y_col="Count", color_col="Placement Organization", color_sequence=color_sequence), use_container_width=True)
 
         # Data Interpretation Section
         st.subheader("📊 Data Interpretation (Separate Views)")
@@ -333,8 +333,8 @@ if menu == "Dashboard":
         st.markdown("#### 2) Placement Status")
         render_interpretation(filtered, "Placement Status")
 
-        st.markdown("#### 3) Placement Hotel")
-        render_interpretation(filtered, "Placement Hotel")
+        st.markdown("#### 3) Placement Organization")
+        render_interpretation(filtered, "Placement Organization")
 
         st.markdown("#### 4) Trade")
         render_interpretation(filtered, "Trade")
