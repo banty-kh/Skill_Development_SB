@@ -316,7 +316,7 @@ if menu == "Dashboard":
         col4.metric("Placed", placed)
         col5.metric("Not Placed", not_placed)
 
-        if "Placement Hotel" in filtered.columns:
+        if "Placement Organization" in filtered.columns:
             hotel_data = filtered[filtered["Placement Status"]=="Placed"]
             if not hotel_data.empty:
                 hotel_chart = hotel_data.groupby("Placement Organization").size().reset_index(name="Count")
